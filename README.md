@@ -247,7 +247,7 @@ here it is in use:
     path=$(get_abs_path "./dontexist") # avoids error
     echo "$path"                       # prints nothing
 
-Here is an example of a function that uses evalBool:
+Here is a more advanced example of a function that uses evalBool:
 
     finder () {
        for arg in ${@:2}; do
