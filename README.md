@@ -43,7 +43,7 @@ Note that strings with empty spaces are `false` but any escape character such as
 
 Here is the defintion:
 
-```
+```bash
 bool () {
 	if   [ -z "$1" ];      then echo "false"; return 1;
 	elif [ "$1" = false ]; then echo "false"; return 1;
@@ -53,7 +53,7 @@ bool () {
 }
 ```
 `bool` takes any variable, or even undeclared variables and returns the exit code that Bash structures like `if` and `elsif` expect. In order to feed them in, place the call in back-ticks.  
-```
+```bash
 if `bool $1`; then
 	echo "'$1' is true";
 else
@@ -64,7 +64,7 @@ fi
 ## Assignment to Variables I
 
 Using `bool`, `not`, `all` or `none` also have a nice side effect of making the evaluations savable to a variable, saving a lot of coding. Normally you might do something like this:
-```
+```bash
 if [ "$stat_1" == "0" ]
 then
 	error_found=false
@@ -76,20 +76,20 @@ echo "error found: $error_found"
 ```
 
 or the quicker way:
-```
+```bash
 [ "$stat_1" == "0" ] && error_found=false || error_found=true
 echo "error found: $error_found"
 ```
 
 with `bool`:
-```
+```bash
 error_found=`bool $stat_1`
 echo "error found: $error_found"
 ```
 
 You cannot save `[ "$stat_1" == "0" ]` to a variable because all it does is emit an exit code, but `bool $stat_1` echoes `false` making it usable for assigning. It also makes it usable for printing to the console:  
 
-```
+```bash
 bool $stat_1                       # prints false
 echo "error found:" `bool $stat_1` # prints error found: false
 ```
@@ -106,7 +106,7 @@ If you are curious, the `if` expects an exit code as it's argument and skips the
 There is also `not` which allows you do to invert the results. For example: `not false` will be `true`
 
 Try it with this:
-```
+```bash
 if `not false`; then 
 	echo "true"
 else
@@ -119,7 +119,7 @@ __NOTE:__ `bool ! true` or `! bool true` won't work! Don't try it.
 ## The Boolean Helpers `all`
 
 You can assess values en masse with `all`, which evaluates to `true` (actually exit code 0) if all of it's arguments are "truthy" by the same definitions used by `bool`. Here, it would echo "true":
-```
+```bash
 str_var="some non-empty string";
 true_var="true";
 
@@ -133,7 +133,7 @@ fi
 ## The Boolean Helpers `none`
 
 With `none`, all arguments to be "falsy". As you might guess, this `echo`s "true":
-```
+```bash
 empty_str="";
 false_str="false";
 
@@ -147,7 +147,7 @@ fi
 ## Assignment to Variables II
 
 Assuming you have this:
-```
+```bash
 stat_1=0
 stat_2=0
 stat_3="running"
@@ -155,7 +155,7 @@ stat_4="running"
 ```
 
 Before you might have done:
-```
+```bash
 if [ "$stat_1" == "0" ] && 
    [ "$stat_2" == "0" ] && 
    [ "$stat_3" != "" ] && 
@@ -169,14 +169,14 @@ fi
 echo "error found: $error_found"
 ```
 Now you can just do:
-```
+```bash
 error_found=`all $stat_1 $stat_2 $stat_3 $stat_4`
 echo "error found: $error_found"
 ```
 ## Advanced Usage
 
 You can mix `bool` with `not` like seen below. You still don't need any brackets but, since there are two function calls, the two function calls need to be in separate sets of back-ticks with the boolean operator in between them: 
-```
+```bash
 if `bool true` && `not false`; then 
 	echo "true"
 else
@@ -186,7 +186,7 @@ fi
 You can also do `bool true` && ! `bool true` but there must be a space after `!` Remember that you are still depending on the `bool` function on both sides so you can't simply put `&& ! true` for the second half.  
 
 Taking things a step further you can use the multi-bool functions in combination as well:
-```
+```bash
 if `all true true true` && `none true false false`; then 
 	echo "true"
 else
@@ -203,7 +203,7 @@ normally see in Bash like '[ "$2" == "yes" ]', with single quotes. The
 remaining args are referred to by number in the first all of the arguments 
 can be variables, allowing you to save a "test" as a string variable and/or 
 test many variables against that test. Here is the function itself:
-```
+```bash
 evalBool () {
 	eval "
 	if $1
@@ -224,7 +224,7 @@ Here is an example where we make a function with evalBool for a common task:
 getting the absolute path from a relative path. The typical problem faced is 
 that you get an error if you try to get the path of a non-existent directory. 
 This protects you from that:
-```
+```bash
 get_abs_path () {
 	if `evalBool "[ -d "$1" ]"`; then
 		echo `cd "$1"; pwd`
@@ -232,7 +232,7 @@ get_abs_path () {
 }
 ```
 here it is in use:
-```
+```bash
 path=$(get_abs_path "../")
 echo "$path"                       # displays path
 
@@ -242,7 +242,7 @@ path=$(get_abs_path "./dontexist") # avoids error
 echo "$path"                       # prints nothing
 ```
 Here is a more advanced example of a function that uses evalBool:
-```
+```bash
 finder () {
 	for arg in ${@:2}; do
 		if `evalBool "${!1}" "${!arg}"`; then
@@ -252,7 +252,7 @@ finder () {
 }
 ```
 You can save "tests" like this:
-```
+```bash
 is_yes='[ "$2" == "yes" ]'
 is_no='[ "$2" == "no" ]'
 is_whatever='[ "$2" == "whatever" ]'
@@ -260,14 +260,14 @@ is_empty='[ -z "$2" ]'
 ```
 Here is an example where you have a number of variable and you want to find 
 out which one passes each test
-```
+```bash
  var1='yes'
  var2='no'
  var3=''
  var4='whatever'
 ```
 We can use our finder function to search for the match and echo the output:
-```
+```bash
 finder is_yes var1 var2 var3 var4      # prints: var1 passed
 finder is_no var1 var2 var3 var4       # prints: var2 passed
 finder is_empty var1 var2 var3 var4    # prints: var3 passed
