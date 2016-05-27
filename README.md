@@ -61,7 +61,7 @@ else
 fi
 ```
 
-## Assignment to Variables I
+## Assignment to Variables I: Single Booleans
 
 Using `bool`, `not`, `all` or `none` also have a nice side effect of making the evaluations savable to a variable, saving a lot of coding. Normally you might do something like this:
 ```bash
@@ -144,7 +144,7 @@ else
 fi
 ```
 
-## Assignment to Variables II
+## Assignment to Variables II: Multiple Booleans
 
 Assuming you have this:
 ```bash
@@ -206,13 +206,13 @@ test many variables against that test. Here is the function itself:
 ```bash
 evalBool () {
 	eval "
-	if $1
+	if '$1';
 	then
-		echo true
-		exit 0
+		echo true;
+		return 0;
 	else
-		echo false
-		exit 1
+		echo false;
+		return 1;
 	fi"
 }
 ```
@@ -273,3 +273,42 @@ finder is_no var1 var2 var3 var4       # prints: var2 passed
 finder is_empty var1 var2 var3 var4    # prints: var3 passed
 finder is_whatever var1 var2 var3 var4 # prints: var4 passed
 ```
+
+## eBool
+
+`eBool` is just `evalBool` with the `[` and `]` automatically inserted:
+```bash
+eBool () {
+	eval "
+	if [ $1 ];
+	then
+		echo true;
+		return 0;
+	else
+		echo false;
+		return 1;
+	fi"
+}
+```
+It makes for slightly cleaner syntax. Here is an example of of a saving to a variable without `evalBool` or `eBool`:  
+```bash
+[ -d "./.git" ] && git_found=true || git_found=false
+echo $git_found
+```
+now:
+```bash
+# with evalBool:
+git_found=$(evalBool '[ -d ./.git ]')
+# with eBool:
+git_found=$(eBool '-d ./.git')
+
+echo $git_found
+```
+Both are printable directly:
+```bash
+evalBool '[ -d ./.git ]'
+eBool '-d ./.git'
+```
+
+
+
