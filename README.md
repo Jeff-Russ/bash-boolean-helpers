@@ -223,8 +223,31 @@ test many variables against that test. Here is the function itself:
     }
 
 The exits codes are what Bash interprets as booleans in 'if' statements, 
-for example.the echoes are there so that you may save the result to a 
-variable for later. Here is an example of a function that uses evalBool:
+for example. The echoes are there so that you may save the result to a 
+variable for later. 
+
+Here is an example where we make a function with evalBool for a common task: 
+getting the absolute path from a relative path. The typical problem faced is 
+that you get an error if you try to get the path of a non-existent directory. 
+This protects you from that:
+
+    get_abs_path () {
+       if `evalBool "[ -d "$1" ]"`; then
+          echo `cd "$1"; pwd`
+       fi
+    }
+
+here it is in use:
+
+    path=$(get_abs_path "../")
+    echo "$path"                       # displays path
+
+    echo `cd "./dontexist"; pwd`       # throws error
+
+    path=$(get_abs_path "./dontexist") # avoids error
+    echo "$path"                       # prints nothing
+
+    Here is an example of a function that uses evalBool:
 
     finder () {
        for arg in ${@:2}; do
