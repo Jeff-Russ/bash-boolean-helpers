@@ -42,14 +42,14 @@ none () {
    done
 }
 
-testBool () {
-   if `bool $1`; then echo "'$1' is true";
-   else echo "'$1' is false";
-   fi
-}
-
-
 # # tests and examples: 
+
+# testBool () {
+#    if `bool $1`; then echo "'$1' is true";
+#    else echo "'$1' is false";
+#    fi
+# }
+
 
 # testBool true;
 # testBool "true";
