@@ -42,7 +42,7 @@ none () {
 
 evalBool () {
 	eval "
-	if '$1';
+	if $1;
 	then
 		echo true;
 		return 0;
