@@ -57,9 +57,9 @@ eBool () {
 	if [ $1 ];
 	then
 		echo true;
-		exit 0;
+		return 0;
 	else
 		echo false;
-		exit 1;
+		return 1;
 	fi"
 }

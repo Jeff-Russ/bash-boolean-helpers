@@ -3,17 +3,21 @@
 source ./bool_helpers.sh
 
 testBool () {
-   if `bool $1`; then echo "'$1' is true";
-   else echo "'$1' is false";
-   fi
+	if `bool $1`; then echo "'$1' is true";
+	else echo "'$1' is false";
+	fi
 }
+
+echo; echo "#### returning true ####"; echo
 
 testBool true;
 testBool "true";
 testBool 1;
 testBool "1";
 testBool "random string";
-newline_char="\n";
+testBool "\n"
+
+echo; echo "#### returning true ####"; echo
 
 testBool false;
 testBool "false";
@@ -28,23 +32,4 @@ if `not false`
 then echo "true"
 else echo "false"
 fi
-str_var="some non-empty string";
-true_var="true"
-if `all $str_var true $true_var "yes"`
-then echo "true"
-else echo "false"
-fi
-empty_str="";
-false_str="false";
-if `none $empty_str false $false_str $undeclared`
-then echo "true"
-else echo "false"
-fi
-if `bool true` && `not false`
-then echo "true"
-else echo "false"
-fi
-if `all true true true` && `none true false false`
-then echo "true"
-else echo "false"
-fi
+
