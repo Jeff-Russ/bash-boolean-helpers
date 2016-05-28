@@ -21,7 +21,7 @@ Functions ending with `?` echo `true` or `false` and are suitable for viewing at
 1. Functions that accept single variable or command, generalize a boolean 
 	* return an exit code of `0` or `1`:
 		* `yea`
-		* `not`
+		* `ney`
 		* `all`
 		* `none`
 	* echo either `true` or `false`:
@@ -107,9 +107,9 @@ If you are curious, the `if` expects an exit code as it's argument and skips the
 
 [read more about exit codes](http://www.cyberciti.biz/faq/shell-how-to-determine-the-exit-status-of-linux-and-unix-command/)
 
-## The Boolean Helper `not`
+## The Boolean Helper `ney`
 
-There is also `not` which allows you do to invert the results. For example: `not false` will be `true`
+There is also `ney` which allows you do to invert the results. For example: `ney false` will be `true`
 
 Try it with this:
 ```bash
@@ -181,9 +181,9 @@ echo "error found: $error_found"
 ```
 ## Advanced Usage
 
-You can mix `yea` with `not` like seen below. You still don't need any brackets but, since there are two function calls, the two function calls need to be in separate sets of back-ticks with the boolean operator in between them: 
+You can mix `yea` with `ney` like seen below. You still don't need any brackets but, since there are two function calls, the two function calls need to be in separate sets of back-ticks with the boolean operator in between them: 
 ```bash
-if `yes true` && `not false`; then 
+if `yes true` && `ney false`; then 
 	echo "true"
 else
 	echo "false"

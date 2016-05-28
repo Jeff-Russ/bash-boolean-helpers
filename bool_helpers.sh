@@ -1,6 +1,6 @@
 #!/bin/bash
 
-yea () {
+_yea () {
 	command -v "$*" >/dev/null 2>&1 || { 
 		if   [ -z "$*" ];      then return 1;
 		elif [ "$*" = false ]; then return 1;
@@ -15,44 +15,7 @@ yea () {
 	return $ret_code
 }
 
-nay () {
-	command -v "$*" >/dev/null 2>&1 || { 
-		if   [ -z "$*" ];      then return 0;
-		elif [ "$*" = false ]; then return 0;
-		elif [ "$*" = 0 ];     then return 0;
-		else return 1;
-		fi
-	}
-	typeset cmnd="$*"
-	typeset ret_code
-	eval $cmnd >/dev/null 2>&1
-	ret_code=$?
-	test $ret_code -eq 0 && return 1 || return 0
-}
-
-all () {
-	while test ${#} -gt 0; do
-		if   [ -z "$1" ];      then return 1;
-		elif [ "$1" = false ]; then return 1;
-		elif [ "$1" = 0 ];     then return 1;
-		else shift;
-		fi
-	done
-	return 0;
-}
-
-none () {
-	while test ${#} -gt 0 ; do
-		if   [ -z "$1" ];      then shift;
-		elif [ "$1" = false ]; then shift;
-		elif [ "$1" = 0 ];     then shift;
-		else return 1;
-		fi
-	done
-	return 0;
-}
-
-yea? () {
+if_yea () {
 	command -v "$*" >/dev/null 2>&1 || { 
 		if   [ -z "$*" ];      then echo false; return 1;
 		elif [ "$*" = false ]; then echo false; return 1;
@@ -67,7 +30,22 @@ yea? () {
 	test $ret_code -eq 0 && echo true || echo false
 }
 
-nay? () {
+_nay () {
+	command -v "$*" >/dev/null 2>&1 || { 
+		if   [ -z "$*" ];      then return 0;
+		elif [ "$*" = false ]; then return 0;
+		elif [ "$*" = 0 ];     then return 0;
+		else return 1;
+		fi
+	}
+	typeset cmnd="$*"
+	typeset ret_code
+	eval $cmnd >/dev/null 2>&1
+	ret_code=$?
+	test $ret_code -eq 0 && return 1 || return 0
+}
+
+if_ney () {
 	command -v "$*" >/dev/null 2>&1 || { 
 		if   [ -z "$*" ];      then echo true; return 0;
 		elif [ "$*" = false ]; then echo true; return 0;
@@ -82,7 +60,18 @@ nay? () {
 	test $ret_code -eq 0 && echo false || echo true
 }
 
-all? () {
+_all () {
+	while test ${#} -gt 0; do
+		if   [ -z "$1" ];      then return 1;
+		elif [ "$1" = false ]; then return 1;
+		elif [ "$1" = 0 ];     then return 1;
+		else shift;
+		fi
+	done
+	return 0;
+}
+
+if_all () {
 	while test ${#} -gt 0; do
 		if   [ -z "$1" ];      then echo false; return 1;
 		elif [ "$1" = false ]; then echo false; return 1;
@@ -94,7 +83,18 @@ all? () {
 	return 0;
 }
 
-none? () {
+_none () {
+	while test ${#} -gt 0 ; do
+		if   [ -z "$1" ];      then shift;
+		elif [ "$1" = false ]; then shift;
+		elif [ "$1" = 0 ];     then shift;
+		else return 1;
+		fi
+	done
+	return 0;
+}
+
+if_none () {
 	while test ${#} -gt 0 ; do
 		if   [ -z "$1" ];      then shift;
 		elif [ "$1" = false ]; then shift;
@@ -106,14 +106,16 @@ none? () {
 	return 0;
 }
 
-true? () {
-	if test "$@"; then echo true; return 0;
-	else echo false; return 1;
+if_true () {
+	if test "$@"
+	  then echo true;  return 0;
+	else   echo false; return 1;
 	fi
 }
-false? () {
-	if test "$@"; then echo true; return 0;
-	else echo false; return 1;
+if_false () {
+	if test "$@"
+	  then echo true;  return 0;
+	else   echo false; return 1;
 	fi
 }
 
@@ -126,3 +128,59 @@ else
 	alias when="test"
 	alias unless="test !"
 fi
+
+_f () { test -f "$@"; }
+_d () { test -d "$@"; }
+_ls () { test "$(ls $@)"; }
+_gt () { test "$1" -gt "$2"; }
+_eq () { test "$1" -eq "$2"; }
+
+
+if_f () { 
+	if test -f "$@"
+	  then echo true;  return 0;
+	else   echo false; return 1;
+	fi
+}
+
+if_d () { 
+	if test -d "$@"
+	  then echo true;  return 0;
+	else   echo false; return 1;
+	fi
+}
+
+if_ls () { 
+	if test "$(ls $@)"
+	  then echo true;  return 0;
+	else   echo false; return 1;
+	fi
+}
+
+if_gt () { 
+	if test "$1" -gt "$2"
+	  then echo true;  return 0;
+	else   echo false; return 1;
+	fi
+}
+
+if_eq () { 
+	if test "$1" -eq "$2"
+	  then echo true;  return 0;
+	else   echo false; return 1;
+	fi
+}
+
+hasSpaces () {
+  if [[ "$1" != "${1/ /}" ]]
+    then echo true;  return 0;
+  else   echo false; return 1;
+  fi
+}
+
+isInt () {
+  if [[ $1 =~ ^-?[0-9]+$ ]]
+    then echo true;  return 0;
+  else   echo false; return 1;
+  fi 
+}
