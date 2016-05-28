@@ -58,7 +58,7 @@ Note that strings with empty spaces are `false` but any escape character such as
 
 Here is the defintion:
 
-`_yea` takes any variable, or even undeclared variables and returns the exit code that Bash structures like `if` and `elsif` expect. In order to feed them in, place the call in back-ticks.  
+`_yea` takes any variable, or even undeclared variables and returns the exit code that Bash structures like `if` and `elsif` expect. 
 ```bash
 if _yea $1; then
 	echo "'$1' is true";
@@ -181,19 +181,18 @@ echo "error found: $error_found"
 ```
 ## Advanced Usage
 
-You can mix `_yea` with `_nay` like seen below. You still don't need any brackets but, since there are two function calls, the two function calls need to be in separate sets of back-ticks with the boolean operator in between them: 
+You can mix `_yea` with `_nay` like seen below. 
 ```bash
-if `_yea true` && `_nay false`; then 
+if _yea true && _nay false; then 
 	echo "true"
 else
 	echo "false"
 fi
 ```
-You can also do `_yea true` && ! `_yea true` but there must be a space after `!` Remember that you are still depending on the `_yea` function on both sides so you can't simply put `&& ! true` for the second half.  
 
 Taking things a step further you can use the multi-bool functions in combination as well:
 ```bash
-if `_all true true true` && `_none true false false`; then 
+if _all true true true && _none true false false; then 
 	echo "true"
 else
 	echo "false"
