@@ -19,7 +19,7 @@ then echo "true"
 else echo "false"
 fi
 
-if `bool true` && `not false`
+if `yes true` && `nay false`
 then echo "true"
 else echo "false"
 fi
@@ -48,7 +48,7 @@ then echo "true"
 else echo "false"
 fi
 
-if `bool "yep"` && `not 1`
+if `bool "yep"` && `nay 1`
 then echo "true"
 else echo "false"
 fi

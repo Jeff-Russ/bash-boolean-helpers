@@ -3,7 +3,7 @@
 source ./bool_helpers.sh
 
 testBool () {
-	if `bool $1`; then echo "'$1' is true";
+	if yea $1; then echo "'$1' is true";
 	else echo "'$1' is false";
 	fi
 }
@@ -17,7 +17,7 @@ testBool "1";
 testBool "random string";
 testBool "\n"
 
-echo; echo "#### returning true ####"; echo
+echo; echo "#### returning false ####"; echo
 
 testBool false;
 testBool "false";
@@ -27,8 +27,7 @@ printf "never_declared";       testBool $never_declared;
 printf "empty string literal"; testBool "";
 testBool " ";
 testBool "     ";
-
-if `not false`
+if nay true;
 then echo "true"
 else echo "false"
 fi
