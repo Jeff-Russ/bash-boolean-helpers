@@ -120,7 +120,7 @@ else
 fi
 ```
 
-__NOTE:__ `yea ! true` or `! yea true` won't work! Don't try it.  
+__NOTE:__ `_yea ! true` or `! _yea true` won't work! Don't try it.  
 
 ## The Boolean Helpers `_all`
 
