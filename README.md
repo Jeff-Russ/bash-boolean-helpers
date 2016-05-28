@@ -4,7 +4,7 @@
 
 ### What is it?
 
-This is set of functions for Bash that provide a friendlier generalization of 'yea' and 'no', as well as provide some syntactic sugar They come at a slight performance cost by will make coding easier, cleaner and sometimes safer.  
+This is set of functions for Bash that provide a friendlier generalization of 'yea' and 'nay', as well as provide some syntactic sugar. They come at a slight performance cost by will make coding easier, cleaner and sometimes safer.  
 
 ### Why?
 
