@@ -93,7 +93,7 @@ error_found=`if_yea $stat_1`
 echo "error found: $error_found"
 ```
 
-You cannot save `[ "$stat_1" == "0" ]` to a variable because all it does is emit an exit code, but `yea $stat_1` echoes `false` making it usable for assigning. It also makes it usable for printing to the console:  
+You cannot save `[ "$stat_1" == "0" ]` to a variable because all it does is emit an exit code, but `_yea $stat_1` echoes `false` making it usable for assigning. It also makes it usable for printing to the console:  
 
 ```bash
 yea $stat_1                          # prints false
@@ -183,13 +183,13 @@ echo "error found: $error_found"
 
 You can mix `_yea` with `_nay` like seen below. You still don't need any brackets but, since there are two function calls, the two function calls need to be in separate sets of back-ticks with the boolean operator in between them: 
 ```bash
-if `yea true` && `_nay false`; then 
+if `_yea true` && `_nay false`; then 
 	echo "true"
 else
 	echo "false"
 fi
 ```
-You can also do `yea true` && ! `yea true` but there must be a space after `!` Remember that you are still depending on the `_yea` function on both sides so you can't simply put `&& ! true` for the second half.  
+You can also do `_yea true` && ! `_yea true` but there must be a space after `!` Remember that you are still depending on the `_yea` function on both sides so you can't simply put `&& ! true` for the second half.  
 
 Taking things a step further you can use the multi-bool functions in combination as well:
 ```bash
