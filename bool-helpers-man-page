@@ -1,0 +1,288 @@
+.TH bash\-boolean\-helpers
+.PP
+github.com/Jeff\-Russ/bash\-boolean\-helpers \[la]https://github.com/Jeff-Russ/bash-boolean-helpers\[ra]
+.SS What is it?
+.PP
+This is set of functions for Bash that provide a friendlier generalization of 'yea' and 'nay', as well as provide some syntactic sugar. They come at a slight performance cost by will make coding easier, cleaner and sometimes safer.  
+.SS Why?
+.PP
+There is no flexibility or anything like truthy/falsy in Bash. If you make a variable \fB\fCbool=true\fR, you can sometimes get away with \fB\fCif $bool;\fR but bash tries to execute the VALUE of \fB\fC$bool\fR and either you get an error or something unwanted!  
+.PP
+You have to be explicit with one of these, which are pretty much all the same: \fB\fC[ '$bool' = true ]\fR, \fB\fC[ '$bool' = 'true' ]\fR,  \fB\fC[[ '$bool' = true ]]\fR, \fB\fC[[ '$bool' = 'true' ]]\fR, \fB\fC[[ '$bool' == true ]]\fR, \fB\fC[[ '$bool' == 'true' ]]\fR, \fB\fCif test '$bool' = true;\fR  
+.PP
+BUUUUUT if \fB\fCbool\fR equals \fB\fC1\fR it will be false in any of these syntaxes!  
+.SH Installation / Un\-installation
+.PP
+in your terminal \fB\fCcd\fR to wherever you would like to install it. This will install only for your user so you may choose to put it directly in the home folder or something like \fB\fC~/bin\fR\&. I does not need to be in the \fB\fC$PATH\fR, the script will get sourced by \fB\fC~/.bashrc\fR, making the functions available rather than having script names be callable in the terminal. Next...   
+.PP
+.RS
+.nf
+$ git clone https://github.com/Jeff\-Russ/bash\-boolean\-helpers
+$ cd ./bash\-boolean\-helpers
+$ chmod u+x ./*.sh  # may or may not be needed to make executable
+.fi
+.RE
+.PP
+To just try things out you can \fB\fCsource ./bool\-helpers.sh\fR and run the other scripts to test things out. To make \fB\fCsource ./bool\-helpers.sh\fR automatically with each shell session...   
+.PP
+.RS
+.nf
+$ ./install.sh     # will install (append ~/.bashrc)
+$ ./uninstall.sh   # will remove line and create ~/.bashrc.bak
+$ source ~/.bashrc # this just reloads changes
+.fi
+.RE
+.PP
+to view the manual you have just type \fB\fCbool\-helpers\fR\&.   
+.SH Overview
+.PP
+Functions beginning with \fB\fCif_\fR echo \fB\fCtrue\fR or \fB\fCfalse\fR and are suitable for one liners (\fB\fCif_yea $var && dothis || dothat\fR) viewing at the command line, or redirecting to a variable. There are version without the \fB\fCif\fR in them that are more suitable next to the \fB\fCif\fR keyword. 
+.nr step0 0 1
+.RS
+.IP \n+[step0]
+Functions that accept single variable or command, generalize a boolean 
+.RS
+.IP \(bu 2
+return an exit code of \fB\fC0\fR or \fB\fC1\fR:
+.RS
+.IP \(bu 2
+\fB\fC_yea\fR
+.IP \(bu 2
+\fB\fC_nay\fR
+.IP \(bu 2
+\fB\fC_all\fR
+.IP \(bu 2
+\fB\fC_none\fR
+.RE
+.IP \(bu 2
+echo either \fB\fCtrue\fR or \fB\fCfalse\fR:
+.RS
+.IP \(bu 2
+\fB\fCif_yea\fR
+.IP \(bu 2
+\fB\fCif_nay\fR
+.IP \(bu 2
+\fB\fCif_all\fR
+.IP \(bu 2
+\fB\fCif_none\fR
+.RE
+.RE
+.IP \n+[step0]
+Functions that perform comparison with the same syntax see between \fB\fC[\fR and \fB\fC]\fR or after \fB\fCtest\fR
+.RS
+.IP \(bu 2
+return an exit code of \fB\fC0\fR or \fB\fC1\fR:
+.RS
+.IP \(bu 2
+\fB\fC_true\fR
+.IP \(bu 2
+\fB\fC_false\fR
+.RE
+.IP \(bu 2
+echo either \fB\fCtrue\fR or \fB\fCfalse\fR:
+.RS
+.IP \(bu 2
+\fB\fCif_true\fR
+.IP \(bu 2
+\fB\fCif_false\fR
+.RE
+.RE
+.RE
+.PP
+Note that those under \fB1.\fP do not do any comparison, the are more like converters which use loose evaluation with the following rules:  
+.PP
+\fBWhat is false?\fP
+.br
+\- \fB\fCfalse\fR
+\- \fB\fC"false"\fR
+\- \fB\fC0\fR
+\- \fB\fC"0"\fR
+\- undeclared variables and 
+\- empty strings
+\- commands with \fB\fCreturn\fR a non\-zero status
+.PP
+\fBWhat is true?\fP  
+.RS
+.IP \(bu 2
+Everything else. (but keep reading...)
+.RE
+.PP
+Note that strings with empty spaces are \fB\fCfalse\fR but any escape character such as \fB\fC\\n\fR will make it \fB\fCtrue\fR\&.
+.SH The Boolean Helpers \fB\fC_yea\fR
+.PP
+Here is the defintion:  
+.PP
+\fB\fC_yea\fR takes any variable, or even undeclared variables and returns the exit code that Bash structures like \fB\fCif\fR and \fB\fCelsif\fR expect.   
+.PP
+.RS
+.nf
+if _yea $1; then
+    echo "'$1' is true";
+else
+    echo "'$1' is false";
+fi
+.fi
+.RE
+.SH Assignment to Variables I: Single Booleans
+.PP
+Using \fB\fC_yea\fR, \fB\fC_nay\fR, \fB\fC_all\fR or \fB\fC_none\fR also have a nice side effect of making the evaluations savable to a variable, saving a lot of coding. Normally you might do something like this:  
+.PP
+.RS
+.nf
+if [ "$stat_1" == "0" ]
+then
+    error_found=false
+else
+    error_found=true
+fi
+
+echo "error found: $error_found"
+.fi
+.RE
+.PP
+or the quicker way:  
+.PP
+.RS
+.nf
+[ "$stat_1" == "0" ] && error_found=false || error_found=true
+echo "error found: $error_found"
+.fi
+.RE
+.PP
+with \fB\fC_yea\fR:  
+.PP
+.RS
+.nf
+error_found=`if_yea $stat_1`
+echo "error found: $error_found"
+.fi
+.RE
+.PP
+You cannot save \fB\fC[ "$stat_1" == "0" ]\fR to a variable because all it does is emit an exit code, but \fB\fC_yea $stat_1\fR echoes \fB\fCfalse\fR making it usable for assigning. It also makes it usable for printing to the console:  
+.PP
+.RS
+.nf
+yea $stat_1                          # prints false
+echo "error found:" `if_yea $stat_1` # prints error found: false
+.fi
+.RE
+.PP
+All helper do two things: they \fB\fCecho true\fR or \fB\fCecho false\fR then \fB\fCreturn 0\fR or \fB\fCreturn 1\fR\&. They don't \fB\fCexit 0\fR / \fB\fCexit 1\fR which would actually exit your script or shell if called without redirection!  
+.SH How it works
+.PP
+If you are curious, the \fB\fCif\fR expects an exit code as it's argument and skips the block if it get anything but a 0 That's right, 0 is 'true' and every other integer is false. The \fB\fCtest\fR function, as well as \fB\fC[\fR take normal comparisons as arguments and returns the equivalent, bash\-friendly error code to \fB\fCif\fR\&. \fB\fC_yea\fR works in the same way.
+.PP
+read more about exit codes \[la]http://www.cyberciti.biz/faq/shell-how-to-determine-the-exit-status-of-linux-and-unix-command/\[ra]
+.SH The Boolean Helper \fB\fC_nay\fR
+.PP
+There is also \fB\fC_nay\fR which allows you do to invert the results. For example: \fB\fC_nay false\fR will be \fB\fCtrue\fR
+.PP
+Try it with this:  
+.PP
+.RS
+.nf
+if _nay false; then 
+    echo "true"
+else
+    echo "false"
+fi
+.fi
+.RE
+.PP
+\fBNOTE:\fP \fB\fC_yea ! true\fR or \fB\fC! _yea true\fR won't work! Don't try it.  
+.SH The Boolean Helpers \fB\fC_all\fR
+.PP
+You can assess values en masse with \fB\fC_all\fR, which evaluates to \fB\fCtrue\fR (actually exit code 0) if all of it's arguments are "truthy" by the same definitions used by \fB\fC_yea\fR\&. Here, it would echo "true":  
+.PP
+.RS
+.nf
+str_var="some non\-empty string";
+true_var="true";
+
+if _all $str_var true $true_var "yea"; then 
+    echo "true"
+else
+    echo "false"
+fi
+.fi
+.RE
+.SH The Boolean Helpers \fB\fC_none\fR
+.PP
+With \fB\fC_none\fR, all arguments to be "falsy". As you might guess, this \fB\fCecho\fRs "true":  
+.PP
+.RS
+.nf
+empty_str="";
+false_str="false";
+
+if _none $empty_str false $false_str $undeclared; then 
+    echo "true"
+else
+    echo "false"
+fi
+.fi
+.RE
+.SH Assignment to Variables II: Multiple Booleans
+.PP
+Assuming you have this:  
+.PP
+.RS
+.nf
+stat_1=0
+stat_2=0
+stat_3="running"
+stat_4="running"
+.fi
+.RE
+.PP
+Before you might have done:  
+.PP
+.RS
+.nf
+if [ "$stat_1" == "0" ] && 
+   [ "$stat_2" == "0" ] && 
+   [ "$stat_3" != "" ] && 
+   [ "$stat_4" != "" ]
+then
+    error_found=false
+else
+    error_found=true
+fi
+
+echo "error found: $error_found"
+.fi
+.RE
+.PP
+Now you can just do:  
+.PP
+.RS
+.nf
+error_found=`_all $stat_1 $stat_2 $stat_3 $stat_4`
+echo "error found: $error_found"
+.fi
+.RE
+.SH Advanced Usage
+.PP
+You can mix \fB\fC_yea\fR with \fB\fC_nay\fR like seen below.  
+.PP
+.RS
+.nf
+if _yea true && _nay false; then 
+    echo "true"
+else
+    echo "false"
+fi
+.fi
+.RE
+.PP
+Taking things a step further you can use the multi\-bool functions in combination as well:  
+.PP
+.RS
+.nf
+if _all true true true && _none true false false; then 
+    echo "true"
+else
+    echo "false"
+fi
+.fi
+.RE

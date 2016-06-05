@@ -1,4 +1,10 @@
-#!/bin/bash
+#!/usr/bin/env bash
+# bool_helpers.sh
+
+bool-helpers () {
+	local SRC_DIR=$(cd "$(dirname ""${BASH_SOURCE}"")" && pwd)
+	man "${SRC_DIR}"/bool-helpers-man-page
+}
 
 _yea () {
 	command -v "$*" >/dev/null 2>&1 || { 
@@ -119,15 +125,19 @@ if_false () {
 	fi
 }
 
-if [ -z "$PS1" ]; then 
-	# The shell is not interactive
-	when ()   { test "$@";   }
-	unless () { test "! $@"; }
-else 
+# if [ -z "$PS1" ]; then 
+# 	# The shell is not interactive
+# 	when () {
+# 		test "$@";
+# 	}
+# 	unless () {
+# 		test "! $@";
+# 	}
+# else 
 	# The shell is interactive
 	alias when="test"
 	alias unless="test !"
-fi
+# fi
 
 _f () { test -f "$@"; }
 _d () { test -d "$@"; }
