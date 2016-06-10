@@ -8,6 +8,7 @@ echo "searching for \"bool-helpers.sh\" in ""$HOME"/.bashrc
 
 sed -i.bak '/bool-helpers.sh/d' "$HOME"/.bashrc
 echo "a backup of ~/.bashrc will be made: ~/.bashrc.bak"
+bash
 echo
 echo "Uninstallation complete."
 echo "To reinstall, run ./install.sh"
