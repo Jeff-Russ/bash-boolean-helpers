@@ -11,7 +11,7 @@ echo
 echo "appending ""$HOME"/.bashrc
 echo " with ""$BRC_STR"
 echo "$BRC_STR" >> "$HOME"/.bashrc
-source "$HOME"/.bashrc
+bash
 echo
 echo "installation complete."
 echo "To view the man page, run:"
